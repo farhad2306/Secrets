@@ -37,8 +37,13 @@ const User = new mongoose.model("User", userSchema);
 
 passport.use(new LocalStrategy(User.authenticate()));
  
-passport.serializeUser(User.serializeUser);
-passport.deserializeUser(User.deserializeUser);
+passport.serializeUser((user, cb)=> {
+  return cb(null, user);
+});
+
+passport.deserializeUser((user, cb)=> {
+  return cb(null, user);
+});
 
 app.get("/", (req, res) => {
   res.render("home");
@@ -53,7 +58,7 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/secrets", function(req, res) {
-  if (req.isAuthenticated() === true) {
+  if (req.isAuthenticated()) {
     res.render("secrets");
   } else {
     res.redirect("/login");
